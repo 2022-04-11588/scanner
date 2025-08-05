@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Wedding QR Scanner</title>
+  <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 20px;
+      background-color: #f0f0f0;
+    }
+    #result {
+      margin-top: 20px;
+      font-size: 18px;
+      border: 1px solid #ccc;
+      padding: 15px;
+      background: white;
+      border-radius: 8px;
+      max-width: 400px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+  </style>
+</head>
+<body>
+  <h2>Wedding Invitation QR Scanner</h2>
+  <div id="reader" style="width: 300px; margin: auto;"></div>
+  <div id="result">Waiting to scan...</div>
+
+  <script>
+    function onScanSuccess(decodedText, decodedResult) {
+      try {
+        const guest = JSON.parse(decodedText.trim());
+        const color = guest.type === "DOUBLE" ? "green" : "orange";
+
+        document.getElementById("result").innerHTML = `
+          <p><strong>Name:</strong> ${guest.name}</p>
+          <p><strong>Type:</strong> <span style="color:${color}; font-weight:bold">${guest.type}</span></p>
+          <p><strong>Code:</strong> ${guest.code}</p>
+        `;
+
+        alert(`Welcome ${guest.name} (${guest.type})`);
+      } catch {
+        document.getElementById("result").innerText = "Invalid QR Code!";
+      }
+    }
+
+    new Html5QrcodeScanner("reader", {
+      fps: 10,
+      qrbox: 250
+    }).render(onScanSuccess);
+  </script>
+</body>
+</html>
